@@ -57,7 +57,7 @@ on peux voir que notre image serveur web est bien présent en local
 
 <br>
 
-### d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
+#### d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
 
 verification de la présence du fichier html :
 

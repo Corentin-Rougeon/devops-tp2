@@ -1,13 +1,13 @@
 # TP - 1 Docker
-###ROUGEON Corentin B3 DATA/IA
+### ROUGEON Corentin B3 DATA/IA
 <br>
 <br>
 
-###5. Exécuter un serveur web dans un conteneur docker :
+### 5. Exécuter un serveur web dans un conteneur docker :
 
 `docker run -d -p 80:80 nginx`
 
-####a. Récupérer l’image sur le Docker Hub
+#### a. Récupérer l’image sur le Docker Hub
 
 pour récupérer l'image il, faut tout d'abord lister nos images avec 
 `docker images` :
@@ -30,7 +30,7 @@ pour récupérer l'image, on execute
 
 <br>
 
-####b. Vérifier que cette image est présente en local
+#### b. Vérifier que cette image est présente en local
 
 pour verifier et lister nos images locaux, on execute 
 `sudo docker image ls` :
@@ -44,7 +44,7 @@ on peux voir que notre image serveur web est bien présent en local
 
 <br>
 
-####c. Créer un fichier index.html simple
+#### c. Créer un fichier index.html simple
 
 `nano ~/docker-html/index.html` :
 
@@ -57,7 +57,7 @@ on peux voir que notre image serveur web est bien présent en local
 
 <br>
 
-###d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
+### d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
 
 verification de la présence du fichier html :
 
@@ -85,7 +85,7 @@ resultat `curl localhost` :
 
 <br>
 
-###e. Supprimer le conteneur précédent et arriver au même résultat que précédemment à l’aide de la commande docker cp
+### e. Supprimer le conteneur précédent et arriver au même résultat que précédemment à l’aide de la commande docker cp
 
 pour lister les conteneurs on utilise `docker ps` :
 
@@ -116,5 +116,5 @@ resultat `curl localhost` :
 
 <br>
 
-###6. Builder une image
+### 6. Builder une image
 

@@ -1,0 +1,120 @@
+# TP - 1 Docker
+###ROUGEON Corentin B3 DATA/IA
+<br>
+<br>
+
+###5. Exécuter un serveur web dans un conteneur docker :
+
+`docker run -d -p 80:80 nginx`
+
+####a. Récupérer l’image sur le Docker Hub
+
+pour récupérer l'image il, faut tout d'abord lister nos images avec 
+`docker images` :
+
+    REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+    ubuntu        latest    6b7dfa7e8fdb   4 days ago      77.8MB
+    nginx         latest    ac8efec875ce   7 days ago      142MB
+    hello-world   latest    feb5d9fea6a5   14 months ago   13.3kB
+
+on peux voir notre image de serveur web `nginx` avec le tag `latest`
+
+pour récupérer l'image, on execute
+`docker pull nginx:latest` :
+
+    latest: Pulling from library/nginx
+    Digest: sha256:ab589a3c466e347b1c0573be23356676df90cd7ce2dbf6ec332a5f0a8b5e59db
+    Status: Image is up to date for nginx:latest
+    docker.io/library/nginx:latest
+
+
+<br>
+
+####b. Vérifier que cette image est présente en local
+
+pour verifier et lister nos images locaux, on execute 
+`sudo docker image ls` :
+
+    REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+    ubuntu        latest    6b7dfa7e8fdb   4 days ago      77.8MB
+    nginx         latest    ac8efec875ce   7 days ago      142MB
+    hello-world   latest    feb5d9fea6a5   14 months ago   13.3kB
+
+on peux voir que notre image serveur web est bien présent en local
+
+<br>
+
+####c. Créer un fichier index.html simple
+
+`nano ~/docker-html/index.html` :
+
+    <header>
+            this is my page
+    </header>
+    <body>
+            hello world
+    </body>
+
+<br>
+
+###d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
+
+verification de la présence du fichier html :
+
+`john@ubuntu:~/docker-html$ ls -l`
+
+    total 4
+    -rw-r--r-- 1 root root 64 Dec 13 02:03 index.html
+
+execution de `docker run` lors situer dans le dossier qui contient le fichier
+html :
+
+`sudo docker run -p 80:80 -v $(pwd):/usr/share/nginx/html nginx`
+
+resultat `curl localhost` :
+
+    <header>
+        this is my page
+    </header>
+    <body>
+	    hello world
+    </body>
+
+
+
+
+<br>
+
+###e. Supprimer le conteneur précédent et arriver au même résultat que précédemment à l’aide de la commande docker cp
+
+pour lister les conteneurs on utilise `docker ps` :
+
+    CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                               NAMES
+    68da455a656c   nginx     "/docker-entrypoint.…"   6 minutes ago   Up 6 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp   romantic_goldstine
+
+on peux voir que notre conteneur nginx a une id de `68da455a656c`
+
+pour supprimer le conteneur on execute `docker kill [container id]` :
+
+`docker kill 68da455a656c`
+
+afin de copier nos fichier dans une nouveau container, on execute `docker run -d -p 80:80 nginx`
+
+et pour copier notre fichier html dans notre machine local
+vers notre container, on fait `docker cp [SRC PATH] [DOCKERID]:[DEST PATH]` :
+
+`docker cp ~/docker-html/index.html b33940b08711:/usr/share/nginx/html`
+
+resultat `curl localhost` :
+
+    <header>
+        this is my page
+    </header>
+    <body>
+	    hello world
+    </body>
+
+<br>
+
+###6. Builder une image
+

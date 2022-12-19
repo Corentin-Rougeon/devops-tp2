@@ -118,3 +118,45 @@ resultat `curl localhost` :
 
 ### 6. Builder une image
 
+
+### a. A l’aide d’un Dockerfile, créer une image
+avec `nano dockerfile` on crée notre dockerfile:
+
+    FROM nginx:latest
+    COPY index.html /usr/share/nginx/html/
+
+pour crée notre docker on execute `docker build -t tp-docker .`
+
+resultat de `docker images` :
+
+
+    REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+    tp-docker     latest    a3e8e3669fe4   6 minutes ago   142MB
+    ubuntu        latest    6b7dfa7e8fdb   10 days ago     77.8MB
+    nginx         latest    ac8efec875ce   13 days ago     142MB
+    hello-world   latest    feb5d9fea6a5   15 months ago   13.3kB
+
+on constate que notre image a bien été build
+<br>
+
+### b. Exécuter cette nouvelle image de manière à servir la page html
+
+on run notre image avec `docker run -d -p 80:80 tp-docker` 
+
+resultat `curl localhost` :
+
+    <header>
+        this is my page
+    </header>
+    <body>
+        hello world
+    </body>
+
+### c. Quelles différences observez-vous entre les procédures 5. et 6.
+
+la methode 5. est une methode manuel, ils autorise a faire des
+modification a des container sans faire de modification a une image
+
+la methode 6. est une methode automatique, ils autorise a sauvegarder
+l'image pour pouvoir le run et le metre en sercive automatiquement,
+cette methode permet aussi à versionner et upload l'image facilement

@@ -85,7 +85,7 @@ resultat `curl localhost` :
 
 <br>
 
-### e. Supprimer le conteneur précédent et arriver au même résultat que précédemment à l’aide de la commande docker cp
+#### e. Supprimer le conteneur précédent et arriver au même résultat que précédemment à l’aide de la commande docker cp
 
 pour lister les conteneurs on utilise `docker ps` :
 
@@ -119,7 +119,7 @@ resultat `curl localhost` :
 ### 6. Builder une image
 
 
-### a. A l’aide d’un Dockerfile, créer une image
+#### a. A l’aide d’un Dockerfile, créer une image
 avec `nano dockerfile` on crée notre dockerfile:
 
     FROM nginx:latest
@@ -139,7 +139,7 @@ resultat de `docker images` :
 on constate que notre image a bien été build
 <br>
 
-### b. Exécuter cette nouvelle image de manière à servir la page html
+#### b. Exécuter cette nouvelle image de manière à servir la page html
 
 on run notre image avec `docker run -d -p 80:80 tp-docker` 
 
@@ -152,7 +152,7 @@ resultat `curl localhost` :
         hello world
     </body>
 
-### c. Quelles différences observez-vous entre les procédures 5. et 6.
+#### c. Quelles différences observez-vous entre les procédures 5. et 6.
 
 la methode 5. est une methode manuel, ils autorise a faire des
 modification a des container sans faire de modification a une image

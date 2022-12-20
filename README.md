@@ -194,30 +194,11 @@ conteneur ( come le mot de passe mysql `MYSQL_ROOT_PASSWORD` )
 
 pour executer le conteneur mysql :
 
-`sudo docker run --name myadmin -d -e PMA_HOST=[db_ip] -p 8080:80 phpmyadmin/phpmyadmin`
+`sudo docker run --name myadmin -d --link some-mysql:db -p 8080:80 phpmyadmin/phpmyadmin`
 
-`PMA_HOST` va etre notre variable environnement qui connecte notre
-phpmyadmin a notre base de donnée my sql
+`--link` va permetre de lier notre base de donnée de notre conteneur 
+mysql a notre conteneur phpmyadmin
 
-il nous faut l'addresse ip de notre conteneur, pour cela on peut faire :
-
-`sudo docker network inspect bridge -f '{{json .Containers}}' | grep IPv4`
-
-çe qui nous donne :
-
-    {"707114c358196a1b78146b786951b1d77bdf816e448a28167a894c0422f3ac05": {
-        "Name": "some-mysql",
-        "EndpointID": "e6e68d4a2716abb40849777c48d4fb1f5f055a06e6dce6bcbb937dd603ee7828",
-        "MacAddress": "02:42:ac:11:00:02",
-        "IPv4Address": "172.17.0.2/16",
-        "IPv6Address": ""
-    }}
-
-on peux voir que l'addresse ip de notre base de donnée est `172.17.0.2`
-
-ducoup on execute :
-
-`sudo docker run --name myadmin -d -e PMA_HOST=172.17.0.2 -p 8080:80 phpmyadmin/phpmyadmin`
 
 ajout d'une table dans une base de données sur phpmyadmin 
 (avec quelques variables) :

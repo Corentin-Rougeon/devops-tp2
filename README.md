@@ -160,3 +160,83 @@ modification a des container sans faire de modification a une image
 la methode 6. est une methode automatique, ils autorise a sauvegarder
 l'image pour pouvoir le run et le metre en sercive automatiquement,
 cette methode permet aussi à versionner et upload l'image facilement
+
+<br>
+
+### 7. Utiliser une base de données dans un conteneur docker
+
+#### a. Récupérer les images mysql:5.7 et phpmyadmin/phpmyadmin
+
+pour récuperer l'immage msql:5.7 : `docker pull mysql:5.7`
+
+pour récuperer l'image : `docker pull phpmyadmin/phpmyadmin`
+
+resultat `docker image ls` :
+
+    REPOSITORY              TAG       IMAGE ID       CREATED         SIZE
+    tp-docker               latest    a3e8e3669fe4   23 hours ago    142MB
+    ubuntu                  latest    6b7dfa7e8fdb   11 days ago     77.8MB
+    mysql                   5.7       d410f4167eea   13 days ago     495MB
+    nginx                   latest    ac8efec875ce   2 weeks ago     142MB
+    phpmyadmin/phpmyadmin   latest    4a4023c7e22a   7 months ago    510MB
+    hello-world             latest    feb5d9fea6a5   15 months ago   13.3kB
+
+<br>
+
+#### b. Exécuter deux conteneurs à partir des images et ajouter une table ainsi que quelques enregistrements dans la base de données à l’aide de phpmyadmin
+
+pour executer le conteneur mysql : 
+
+`docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=themagicword -d mysql:5.7`
+
+`-e` va nous permetre de configurer les variables environnement du
+conteneur ( come le mot de passe mysql `MYSQL_ROOT_PASSWORD` )
+
+pour executer le conteneur mysql :
+
+`sudo docker run --name myadmin -d -e PMA_HOST=[db_ip] -p 8080:80 phpmyadmin/phpmyadmin`
+
+`PMA_HOST` va etre notre variable environnement qui connecte notre
+phpmyadmin a notre base de donnée my sql
+
+il nous faut l'addresse ip de notre conteneur, pour cela on peut faire :
+
+`sudo docker network inspect bridge -f '{{json .Containers}}' | grep IPv4`
+
+çe qui nous donne :
+
+    {"707114c358196a1b78146b786951b1d77bdf816e448a28167a894c0422f3ac05": {
+        "Name": "some-mysql",
+        "EndpointID": "e6e68d4a2716abb40849777c48d4fb1f5f055a06e6dce6bcbb937dd603ee7828",
+        "MacAddress": "02:42:ac:11:00:02",
+        "IPv4Address": "172.17.0.2/16",
+        "IPv6Address": ""
+    }}
+
+on peux voir que l'addresse ip de notre base de donnée est `172.17.0.2`
+
+ducoup on execute :
+
+`sudo docker run --name myadmin -d -e PMA_HOST=172.17.0.2 -p 8080:80 phpmyadmin/phpmyadmin`
+
+ajout d'une table dans une base de données sur phpmyadmin 
+(avec quelques variables) :
+
+![../screenshots/phpmyadmin1.png](./screenshots/phpmyadmin1.png)
+
+verification d'ajout de données sur mysql :
+
+`docker exec -it 707114c35819 mysql -pthemagicword`
+
+resultat `select * from db_tp.test_table;` :
+
+    +----+---------+----------+--------------------------+
+    | ID | name    | nickname | email                    |
+    +----+---------+----------+--------------------------+
+    |  1 | JohnDoe | John     | john.doe@emailhost.com   |
+    |  2 | thatGuy | guy      | thatguy@expressemail.org |
+    +----+---------+----------+--------------------------+
+
+
+
+

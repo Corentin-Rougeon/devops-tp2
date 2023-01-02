@@ -47,14 +47,14 @@ on peux voir que notre image serveur web est bien présent en local
 #### c. Créer un fichier index.html simple
 
 `nano ~/docker-html/index.html` :
-
+```html
     <header>
             this is my page
     </header>
     <body>
             hello world
     </body>
-
+```
 <br>
 
 #### d. Démarrer un conteneur et servir la page html créée précédemment à l’aide d’un volume
@@ -73,13 +73,15 @@ html :
 
 resultat `curl localhost` :
 
+
+```html
     <header>
         this is my page
     </header>
     <body>
 	    hello world
     </body>
-
+```
 
 
 
@@ -107,15 +109,16 @@ vers notre container, on fait `docker cp [SRC PATH] [DOCKERID]:[DEST PATH]` :
 
 resultat `curl localhost` :
 
+```html
     <header>
         this is my page
     </header>
     <body>
 	    hello world
     </body>
+```
 
 <br>
-
 ### 6. Builder une image
 
 
@@ -144,13 +147,15 @@ on constate que notre image a bien été build
 on run notre image avec `docker run -d -p 80:80 tp-docker` 
 
 resultat `curl localhost` :
-
+```html
     <header>
         this is my page
     </header>
     <body>
         hello world
     </body>
+```
+
 
 #### c. Quelles différences observez-vous entre les procédures 5. et 6.
 
@@ -218,6 +223,91 @@ resultat `select * from db_tp.test_table;` :
     |  2 | thatGuy | guy      | thatguy@expressemail.org |
     +----+---------+----------+--------------------------+
 
+### 8. Faire la même chose que précédemment en utilisant un fichier docker-compose.yml
 
+creation du fichier docker-compose.yml :
+    
+```yaml
+version: '3.2'
+services:
+    db:
+        image: mysql:5.7
+        container_name: appsDB
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: themagicword
 
+    app:
+        depends_on:
+            - db
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        restart: always
+        ports:
+            - '8080:80'
+        environment:
+        PMA_HOST: db
+```
+
+resultat `docker ps` :
+
+    CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS          PORTS                                                  NAMES
+    b252a13a5787   phpmyadmin/phpmyadmin   "/docker-entrypoint.…"   10 minutes ago   Up 10 minutes   0.0.0.0:8080->80/tcp, :::8080->80/tcp                  phpmyadmin
+    bc98fb5f10cf   mysql:5.7               "docker-entrypoint.s…"   10 minutes ago   Up 10 minutes   33060/tcp, 0.0.0.0:6603->3306/tcp, :::6603->3306/tcp   appsDB
+
+<br>
+
+### 9. Observation de l’isolation réseau entre 3 conteneurs
+
+#### a. créer 3 services (web, app et db) et 2 réseaux (frontend et backend).
+
+On crée un fichier `docker-compose.yml` dans lequel on ajoute 
+trois services avec l'image `praqma/network-multitool`, puis deux 
+sous-réseaux dans lesquels on répartit nos services.
+
+```yaml
+version: "3.9"
+
+services:
+  web:
+    image: praqma/network-multitool
+    networks:
+      - frontend
+  app:
+    image: praqma/network-multitool
+    networks:
+      - frontend
+      - backend
+  db:
+    image: praqma/network-multitool
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+```
+
+On lance le `docker-compose` avec la commande suivante.
+
+```bash
+docker-compose up -d
+```
+<br>
+
+#### b. Quelles lignes du résultat de la commande docker inspect justifient ce comportement ?
+
+```bash
+docker exec -it docker_web_1 ping db
+```
+<br>
+
+#### c. Dans quelle situation réelles pourrait-on avoir cette configuration réseau ?
+
+Avec une application, un sous-réseau de conteneurs peut être isolé pour
+la sécurisation des element back-end. Par exemple on peut avoir un site
+web dans un sous-réseau et une db dans l'autre (çe qui isole les deux et
+empêche une faille accessible depuis le conteneur site web)
 
